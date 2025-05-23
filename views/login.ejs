@@ -1,0 +1,24 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+</head>
+<body>
+<h1>Login</h1>
+<form action="/login" method="POST" id="login-form">
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="name" required placeholder="Username">
+    </div>
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required placeholder="Password">
+    </div>
+    <button type="submit">Login</button>
+</form>
+<a href="/register">Register</a>
+
+<script src="js/login/index.js"></script>
+</body>
+</html>
