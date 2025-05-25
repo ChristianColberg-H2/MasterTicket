@@ -169,6 +169,30 @@ let viewTicket = async (ticketId) => {
         const dueDate = ticket.due_date ? new Date(ticket.due_date).toLocaleString() : 'Not set';
         const closedDate = ticket.closed_at ? new Date(ticket.closed_at).toLocaleString() : 'Not closed';
 
+        // Debug the comments data
+        console.log('All ticket data:', ticket);
+        if (ticket.comments && ticket.comments.length > 0) {
+            console.log('First comment data:', ticket.comments[0]);
+            console.log('First comment user:', ticket.comments[0].user);
+            console.log('First comment user_id:', ticket.comments[0].user_id);
+        }
+
+
+        let commentsHtml = '<p class="no-comments">No comments yet.</p>';
+        if (ticket.comments && ticket.comments.length > 0) {
+            commentsHtml = ticket.comments.map(comment => `
+            <div class="comment">
+                <div class="comment-header">
+                    <span class="comment-author">${comment.user.name}</span>
+                    <span class="comment-date">${new Date(comment.created_at).toLocaleString()}</span>
+                </div>
+                <div class="comment-content">
+                    <p class="comment-content">${comment.content}</p>
+                </div>
+            </div>    
+        `).join('');
+        }
+
         contentSection.innerHTML = `
             <div class="ticket-details">
                 <div class="ticket-header">
@@ -217,7 +241,7 @@ let viewTicket = async (ticketId) => {
                 <div class="ticket-comments">
                     <h3>Comments</h3>
                     <div id="comments-container">
-                        <p class="no-comments">No comments yet.</p>
+                        ${commentsHtml}
                     </div>
                     <form id="comment-form" class="add-comment">
                         <input type="hidden" name="ticket_id" value="${ticket.id}">

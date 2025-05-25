@@ -109,6 +109,14 @@ router.get('/:ticketId', async (req, res) => {
         ticket.dataValues.status = await Models.Status.findOne({ where: { id: ticket.status_id } });
         ticket.dataValues.priority = await Models.Priorities.findOne({ where: { id: ticket.priority_id } });
         ticket.dataValues.category = await Models.Categories.findOne({ where: { id: ticket.category_id } });
+        ticket.dataValues.comments = await Models.Comments.findAll({
+            where: { ticket_id: ticketId },
+            order: [['created_at', 'ASC']]
+        });
+
+        for (let comment of ticket.dataValues.comments) {
+            comment.dataValues.user = await Models.Users.findOne({ id: comment.user_id });
+        }
 
         delete ticket.dataValues.status_id;
         delete ticket.dataValues.priority_id;
