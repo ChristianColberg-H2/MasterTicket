@@ -2,47 +2,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/css/main/index.css">
+    <link rel="stylesheet" href="/css/main/index.css" type="text/css">
+    <script src="https://kit.fontawesome.com/d7cb81324e.js" crossorigin="anonymous"></script>
     <title>Document</title>
 </head>
 <body>
 
-<div class="dashboard-container">
+<div class="dashboardContainer">
 
-    <div class="grid-item" id="navigation">
+    <section class="grid-item" id="navigation">
         <h3>Company Name</h3>
         <div class="nav-container">
             <nav>
                 <ul>
-                    <li><a href="/home">Home</a></li>
+                    <li><a href="#">Home</a></li>
                     <li><a href="/logout">Logout</a></li>
                 </ul>
             </nav>
         </div>
         <p class="welcome-message">Welcome, <%= name%></p>
-    </div>
+    </section>
 
-    <div class="grid-item" id="ticket-list">
-        <h3>Tickets</h3>
-        <ul>
-            <li>
-                <h4>Ticket Title</h4>
-                <p>Ticket Description</p>
-                <button>View</button>
-            </li>
-            <li>
-                <h4>Ticket Title</h4>
-                <p>Ticket Description</p>
-                <button>View</button>
-            </li>
+    <section class="grid-item" id="ticketList">
+        <div class="ticket-header">
+            <h3>Tickets</h3>
+            <button id="new-ticket-btn" class="new-ticket-button">New Ticket</button>
+        </div>
+
+        <ul id="tickets-container">
+            <!-- This is where the tickets will be dynamically inserted -->
         </ul>
-    </div>
+    </section>
 
-    <div class="grid-item" id="content">
-        <p>content</p>
-    </div>
+    <section class="grid-item" id="content-section">
+        <!-- This section will be used to display ticket details or forms -->
+    </section>
 </div>
 
-
+<script src="js/main/index.js"></script>
 </body>
 </html>

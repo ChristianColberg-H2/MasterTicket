@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, confirmPassword } = req.body;
     console.log(req.body);
 
     if (!name || !email || !password) {
@@ -31,6 +31,14 @@ router.post('/', async (req, res) => {
         });
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        console.log(4);
+        return res.status(400).json({
+            message: 'Invalid email format'
+        });
+    }
+
     if (password.length < 6) {
         console.log(3);
         return res.status(400).json(
@@ -38,11 +46,10 @@ router.post('/', async (req, res) => {
         });
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        console.log(4);
-        return res.status(400).json({
-            message: 'Invalid email format'
+    if (password !== confirmPassword) {
+        console.log(5);
+        return res.status(400).json(
+            { message: 'Password and Confirm Password do not match'
         });
     }
 

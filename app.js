@@ -7,6 +7,8 @@ import commonRoute from './routes/common.js';
 import loginRoute from './routes/login.js';
 import logoutRoute from './routes/logout.js';
 import registerRoute from './routes/register.js';
+import ticketRoute from './routes/ticket.js';
+import commentRoute from './routes/comment.js';
 
 let app = Express();
 DotEnv.config();
@@ -32,6 +34,8 @@ app.use(Express.static('public'));
 app.use('/login', loginRoute);
 app.use('/logout', logoutRoute);
 app.use('/register', registerRoute);
+app.use('/ticket', ticketRoute);
+app.use('/comment', commentRoute);
 app.use(loginAuth, commonRoute);
 
 app.listen(process.env.PORT, (err) => {
