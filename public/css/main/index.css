@@ -183,6 +183,25 @@ body {
     line-height: 1.5;
 }
 
+.closed-tickets-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+#content-section h2 {
+    margin-top: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+/* Make the active link appear selected */
+nav ul li a.active {
+    font-weight: bold;
+    color: #0056b3;
+}
+
+
 /* Simple card effect for the content */
 #content-section {
     position: relative;

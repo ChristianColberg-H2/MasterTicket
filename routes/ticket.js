@@ -196,6 +196,42 @@ router.put('/resolve/:ticketId', async (req, res) => {
         console.error('[Cancel Ticket]:', err);
         return res.status(500).json({ message: 'Internal server error' });
     }
-})
+});
+
+router.get('/closed', async (req, res) => {
+    const { user_id } = req.session;
+    console.log(user_id);
+    if (!user_id) {
+        return res.redirect('/login');
+    }
+
+    try {
+        let tickets = await Models.Tickets.findAll({
+            where: {
+                user_id: user_id,
+                status_id: {
+                    [Op.notIn]: [1, 2, 3, 4]
+                }
+            },
+            order: [[
+                Models.sequelize.literal('CASE WHEN updatedAt IS NULL THEN 1 ELSE 0 END, updatedAt DESC, createdAt DESC')
+            ]]
+        });
+
+        for (let ticket of tickets) {
+            ticket.dataValues.status = await Models.Status.findOne({ where: { id: ticket.status_id } });
+            ticket.dataValues.priority = await Models.Priorities.findOne({ where: { id: ticket.priority_id } });
+            ticket.dataValues.category = await Models.Categories.findOne({ where: { id: ticket.category_id } });
+            delete ticket.dataValues.status_id;
+            delete ticket.dataValues.priority_id;
+            delete ticket.dataValues.category_id;
+        }
+
+        return res.status(200).json({ tickets });
+    } catch (err) {
+        console.error('[Tickets]:', err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 export default router;

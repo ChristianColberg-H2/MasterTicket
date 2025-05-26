@@ -1,5 +1,8 @@
 let ticketList = document.querySelector('#tickets-container');
 let contentSection = document.querySelector('#content-section');
+let activeTicketsLink = document.querySelector('#active-tickets');
+let closedTicketsLink = document.querySelector('#closed-tickets');
+
 
 document.addEventListener('DOMContentLoaded', () => {
     getTickets();
@@ -447,4 +450,56 @@ let resolveTicket = async (ticketId) => {
 
     await getTickets();
     showDefaultContent();
+};
+
+let getClosedTickets = async () => {
+    try {
+        let response = await fetch('/ticket/closed');
+        console.log(response);
+
+        if (!response.ok) {
+            alert('Failed to fetch closed tickets');
+            return;
+        }
+
+        let tickets = (await response.json()).tickets;
+
+        contentSection.innerHTML = '';
+
+        const heading = document.createElement('h2');
+        heading.textContent = 'Closed & Resolved Tickets';
+        contentSection.appendChild(heading);
+
+        const closedTicketsList = document.createElement('ul');
+        closedTicketsList.className = 'closed-tickets-list';
+        contentSection.appendChild(closedTicketsList);
+
+        if (tickets.length === 0) {
+            let emptyMessage = document.createElement('li');
+            emptyMessage.className = 'empty-tickets-message';
+            emptyMessage.textContent = 'No closed tickets found.';
+            closedTicketsList.appendChild(emptyMessage);
+            return;
+        }
+
+        for (let ticket of tickets) {
+            let ticketItem = document.createElement('li');
+            ticketItem.className = 'ticket-item';
+            ticketItem.innerHTML = `
+                <div class="ticket-content">
+                    <h3 class="ticket-title">${ticket.title}</h3>
+                    <p class="ticket-status">Status: ${ticket.status.name}</p>
+                    <span class="ticket-category">Category: ${ticket.category.name}</span>
+                </div>
+                <div class="ticket-footer">
+                    <button class="view-ticket-btn" onclick="viewTicket(${ticket.id})">View</button>
+                </div>
+            `;
+
+            closedTicketsList.appendChild(ticketItem);
+        }
+    } catch (err) {
+        console.error('Error fetching closed tickets:', err);
+        alert('An error occurred while fetching closed tickets.');
+    }
 };
