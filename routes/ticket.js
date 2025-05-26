@@ -198,7 +198,7 @@ router.put('/resolve/:ticketId', async (req, res) => {
     }
 });
 
-router.get('/closed', async (req, res) => {
+router.get('/closed-tickets', async (req, res) => {
     const { user_id } = req.session;
     console.log(user_id);
     if (!user_id) {

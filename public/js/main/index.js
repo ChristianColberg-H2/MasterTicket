@@ -1,8 +1,5 @@
 let ticketList = document.querySelector('#tickets-container');
 let contentSection = document.querySelector('#content-section');
-let activeTicketsLink = document.querySelector('#active-tickets');
-let closedTicketsLink = document.querySelector('#closed-tickets');
-
 
 document.addEventListener('DOMContentLoaded', () => {
     getTickets();
@@ -454,7 +451,7 @@ let resolveTicket = async (ticketId) => {
 
 let getClosedTickets = async () => {
     try {
-        let response = await fetch('/ticket/closed');
+        let response = await fetch('/ticket/closed-tickets');
         console.log(response);
 
         if (!response.ok) {
