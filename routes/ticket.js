@@ -229,7 +229,7 @@ router.get('/closed-tickets', async (req, res) => {
 
         return res.status(200).json({ tickets });
     } catch (err) {
-        console.error('[Tickets]:', err);
+        console.error('[Closed tickets]:', err);
         return res.status(500).json({ message: 'Internal server error' });
     }
 });
