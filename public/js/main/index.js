@@ -30,13 +30,17 @@ let getTickets = async () => {
 
         for (let ticket of tickets) {
             let ticketItem = document.createElement('li');
+            ticketItem.className = 'ticket-item';
             ticketItem.innerHTML = `
-                <h3 class="ticket-title">${ticket.title}</h3>
-                <p class="ticket-description">${ticket.description}</p>
-                <p>Status: ${ticket.status.name}</p>
-                <p>Priority: ${ticket.priority.name}</p>
-                <p>Category: ${ticket.category.name}</p>
-                <button onclick="viewTicket(${ticket.id})">View</button>
+                <div class="ticket-content">
+                    <h3 class="ticket-title">${ticket.title}</h3>
+                    <p class="ticket-status">Status: ${ticket.status.name}</p>
+                    <span class="ticket-category">Category: ${ticket.category.name}</span>
+                </div>
+                <div class="ticket-footer">
+                    <button class="view-ticket-btn" onclick="viewTicket(${ticket.id})">View</button>
+                </div>
+
         `;
 
             ticketItem.href="#";
@@ -269,6 +273,8 @@ let viewTicket = async (ticketId) => {
             <div class="ticket-details">
                 <div class="ticket-header">
                     <h2>${ticket.title}</h2>
+                    <button id="resolve-ticket-btn" onclick="resolveTicket(${ticketId})">Resolve Ticket</button>
+                    <button id="cancel-ticket-btn" onclick="cancelTicket(${ticketId})">Cancel Ticket</button>
                 </div>
                 
                 <div class="ticket-meta">
@@ -409,53 +415,36 @@ let showDefaultContent = () => {
     document.getElementById('dashboard-new-ticket').addEventListener('click', createNewTicket);
 };
 
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-
-    // Create message content
-    const messageContent = document.createElement('div');
-    messageContent.className = 'notification-message';
-    messageContent.textContent = message;
-
-    // Create icon based on type
-    const icon = document.createElement('div');
-    icon.className = 'notification-icon';
-
-    if (type === 'success') {
-        icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-.997-6l7.07-7.071-1.414-1.414-5.656 5.657-2.829-2.829-1.414 1.414L11.003 16z" fill="currentColor"/></svg>';
-    } else if (type === 'error') {
-        icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z" fill="currentColor"/></svg>';
-    } else {
-        icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-11v6h2v-6h-2zm0-4v2h2V7h-2z" fill="currentColor"/></svg>';
-    }
-
-    // Add close button
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'notification-close';
-    closeBtn.innerHTML = '&times;';
-    closeBtn.addEventListener('click', () => {
-        document.body.removeChild(notification);
+let cancelTicket = async (ticketId) => {
+    const response = await fetch(`ticket/cancel/${ticketId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
     });
 
-    // Assemble notification
-    notification.appendChild(icon);
-    notification.appendChild(messageContent);
-    notification.appendChild(closeBtn);
+    if (!response.ok) {
+        alert('Failed to cancel ticket');
+        return;
+    }
 
-    // Add to DOM
-    document.body.appendChild(notification);
+    await getTickets();
+    showDefaultContent();
+};
 
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        if (document.body.contains(notification)) {
-            notification.classList.add('fade-out');
-            setTimeout(() => {
-                if (document.body.contains(notification)) {
-                    document.body.removeChild(notification);
-                }
-            }, 500);
-        }
-    }, 5000);
-}
+let resolveTicket = async (ticketId) => {
+    const response = await fetch(`ticket/resolve/${ticketId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+
+    if (!response.ok) {
+        alert('Failed to resolve ticket');
+        return;
+    }
+
+    await getTickets();
+    showDefaultContent();
+};

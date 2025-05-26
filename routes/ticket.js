@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import Models from '../orm/models.js';
+import { Op } from 'sequelize';
+
 
 const router = Router();
 
@@ -11,7 +13,12 @@ router.get('/tickets', async (req, res) => {
 
     try {
         let tickets = await Models.Tickets.findAll({
-            where: { user_id: user_id},
+            where: {
+                user_id: user_id,
+                status_id: {
+                    [Op.notIn]: [5, 6]
+                }
+            },
             order: [[
                 Models.sequelize.literal('CASE WHEN updatedAt IS NULL THEN 1 ELSE 0 END, updatedAt DESC, createdAt DESC')
             ]]
@@ -132,5 +139,63 @@ router.get('/:ticketId', async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+router.put('/cancel/:ticketId', async (req, res) => {
+    const { user_id } = req.session;
+    const { ticketId } = req.params;
+
+    if (!user_id) {
+        return res.redirect('/login');
+    }
+
+    try {
+        let ticket = await Models.Tickets.findOne({ where: { id: ticketId, user_id: user_id } });
+
+        if (!ticket) {
+            return res.status(404).json({ message: 'Ticket not found' });
+        }
+
+        if (ticket.status_id === 6) {
+            return res.status(400).json({ message: 'Ticket is already cancelled' });
+        }
+
+        ticket.status_id = 6;
+        await ticket.save();
+
+        return res.status(200).json({ message: 'Ticket cancelled successfully' });
+    } catch (err) {
+        console.error('[Cancel Ticket]:', err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
+
+router.put('/resolve/:ticketId', async (req, res) => {
+    const { user_id } = req.session;
+    const { ticketId } = req.params;
+
+    if (!user_id) {
+        return res.redirect('/login');
+    }
+
+    try {
+        let ticket = await Models.Tickets.findOne({ where: { id: ticketId, user_id: user_id } });
+
+        if (!ticket) {
+            return res.status(404).json({ message: 'Ticket not found' });
+        }
+
+        if (ticket.status_id === 5) {
+            return res.status(400).json({ message: 'Ticket is already resolved' });
+        }
+
+        ticket.status_id = 5;
+        await ticket.save();
+
+        return res.status(200).json({ message: 'Ticket resolved successfully' });
+    } catch (err) {
+        console.error('[Cancel Ticket]:', err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+})
 
 export default router;
