@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        alert("Registered successfully");
+        console.log('Registration successful');
         window.location.href = "/";
     });
 });

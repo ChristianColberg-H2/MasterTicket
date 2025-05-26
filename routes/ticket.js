@@ -13,7 +13,7 @@ router.get('/tickets', async (req, res) => {
         let tickets = await Models.Tickets.findAll({
             where: { user_id: user_id},
             order: [[
-                Models.sequelize.literal('CASE WHEN updated_at IS NULL THEN 1 ELSE 0 END, updated_at DESC, created_at DESC')
+                Models.sequelize.literal('CASE WHEN updatedAt IS NULL THEN 1 ELSE 0 END, updatedAt DESC, createdAt DESC')
             ]]
         });
 
@@ -55,7 +55,7 @@ router.get('/priorities', async (req, res) => {
 
 router.post('/create', async (req, res) => {
     const { user_id } = req.session;
-    const { title, description, priority_id, category_id } = req.body;
+    let { title, description, priority_id, category_id } = req.body;
     console.log(req.body);
 
     if (!user_id) {
@@ -66,8 +66,11 @@ router.post('/create', async (req, res) => {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
+    title = title.charAt(0).toUpperCase() + title.slice(1);
+    description = description.charAt(0).toUpperCase() + description.slice(1);
+
     try {
-        await Models.Tickets.create({
+        const newTicket = await Models.Tickets.create({
             user_id: user_id,
             assigned_to: null,
             category_id: category_id,
@@ -75,13 +78,11 @@ router.post('/create', async (req, res) => {
             priority_id: priority_id,
             title: title,
             description: description,
-            created_at: new Date(),
-            updated_at: null,
-            due_date: null,
-            closed_at: null
+            dueDate: null,
+            closedAt: null
         });
 
-        return res.status(200).json({ message: 'Ticket created successfully' });
+        return res.status(200).json({ message: 'Ticket created successfully', id: newTicket.id });
     } catch (err) {
         console.error('[Create Ticket]:', err);
         return res.status(500).json({ message: 'Internal server error' });
@@ -111,11 +112,12 @@ router.get('/:ticketId', async (req, res) => {
         ticket.dataValues.category = await Models.Categories.findOne({ where: { id: ticket.category_id } });
         ticket.dataValues.comments = await Models.Comments.findAll({
             where: { ticket_id: ticketId },
-            order: [['created_at', 'ASC']]
+            order: [['createdAt', 'ASC']]
         });
 
         for (let comment of ticket.dataValues.comments) {
-            comment.dataValues.user = await Models.Users.findOne({ id: comment.user_id });
+            comment.dataValues.user = await Models.Users.findOne({ where: { id: comment.user_id }});
+            console.log(comment.dataValues.user);
         }
 
         delete ticket.dataValues.status_id;

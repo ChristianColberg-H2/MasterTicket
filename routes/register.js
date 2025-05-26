@@ -14,8 +14,11 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { name, email, password, confirmPassword } = req.body;
+    let { name, email, password, confirmPassword } = req.body;
     console.log(req.body);
+
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+    email = email.charAt(0).toUpperCase() + email.slice(1);
 
     if (!name || !email || !password) {
         console.log(1);
@@ -75,7 +78,6 @@ router.post('/', async (req, res) => {
             email: email,
             password_hash: password_hash,
             role_id: 1,
-            created_at: new Date(),
             is_active: true
         });
 

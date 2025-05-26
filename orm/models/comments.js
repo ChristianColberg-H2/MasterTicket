@@ -27,16 +27,14 @@ let Comments = sequelize.define('comments', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    created_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    },
     is_internal: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
     }
+}, {
+    tableName: 'comments',
+    timestamps: true
 });
 
 export default Comments;

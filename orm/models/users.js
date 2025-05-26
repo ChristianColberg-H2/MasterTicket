@@ -28,16 +28,14 @@ let Users = sequelize.define('users', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    created_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    },
     is_active: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true
     }
+}, {
+    tableName: 'users',
+    timestamps: true
 });
 
 export default Users;

@@ -55,24 +55,17 @@ let Tickets = sequelize.define('tickets', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    created_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    },
-    updated_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
-        defaultValue: DataTypes.NOW
-    },
-    due_date: {
+    dueDate: {
         type: DataTypes.DATE,
         allowNull: true
     },
-    closed_at: {
+    closedAt: {
         type: DataTypes.DATE,
         allowNull: true
     },
+}, {
+    tableName: 'tickets',
+    timestamps: true
 });
 
 export default Tickets;
