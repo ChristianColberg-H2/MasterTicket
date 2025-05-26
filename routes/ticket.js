@@ -160,6 +160,7 @@ router.put('/cancel/:ticketId', async (req, res) => {
         }
 
         ticket.status_id = 6;
+        ticket.closedAt = new Date();
         await ticket.save();
 
         return res.status(200).json({ message: 'Ticket cancelled successfully' });
@@ -189,6 +190,7 @@ router.put('/resolve/:ticketId', async (req, res) => {
         }
 
         ticket.status_id = 5;
+        ticket.closedAt = new Date();
         await ticket.save();
 
         return res.status(200).json({ message: 'Ticket resolved successfully' });

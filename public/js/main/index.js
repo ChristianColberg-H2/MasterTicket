@@ -420,7 +420,7 @@ let cancelTicket = async (ticketId) => {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
-        },
+        }
     });
 
     if (!response.ok) {
@@ -437,7 +437,7 @@ let resolveTicket = async (ticketId) => {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
-        },
+        }
     });
 
     if (!response.ok) {
